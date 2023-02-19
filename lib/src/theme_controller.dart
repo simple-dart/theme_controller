@@ -61,22 +61,23 @@ class ThemeController {
     window.localStorage[_localSettingsTheme] = _theme;
     final linkElements = querySelectorAll('link');
     final headElement = querySelector('head')!;
-    final themeElement = linkElements.singleWhere((element) {
-      if (element is LinkElement) {
-        if (element.href.endsWith(_themeFileSuffix)) {
-          return true;
+    for (final linkElement in linkElements) {
+      if (linkElement is LinkElement) {
+        if (linkElement.href.endsWith(_themeFileSuffix)) {
+          final newLinkElem = LinkElement()..rel = 'stylesheet';
+          final oldLinkElementIndex = headElement.children.indexOf(linkElement);
+          headElement.children.insert(oldLinkElementIndex + 1, newLinkElem);
+          newLinkElem.href = '${_theme.toLowerCase()}$_themeFileSuffix';
+          Future.delayed(const Duration(milliseconds: 250), linkElement.remove);
+          _onThemeChange.sink.add(_theme);
+          return;
         }
       }
-      return false;
-    }, orElse: () {
-      final newElem = LinkElement()..rel = 'stylesheet';
-      headElement.children.add(newElem);
-      return newElem;
-    });
-    if (themeElement is LinkElement) {
-      themeElement.href = '${_theme.toLowerCase()}$_themeFileSuffix';
-      _onThemeChange.sink.add(_theme);
     }
+    final newLinkElem = LinkElement()..rel = 'stylesheet';
+    headElement.children.add(newLinkElem);
+    newLinkElem.href = '${_theme.toLowerCase()}$_themeFileSuffix';
+    _onThemeChange.sink.add(_theme);
   }
 
   bool get monoSpaceFont => _monoSpaceFont;

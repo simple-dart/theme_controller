@@ -1,6 +1,6 @@
 name: simple_dart_theme_controller
 description: Theme Controller for Simple Dart UI framework
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/simple-dart/theme_controller
 platforms:
   web:
